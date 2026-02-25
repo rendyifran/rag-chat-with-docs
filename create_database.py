@@ -1,8 +1,8 @@
 from langchain_community.document_loaders import DirectoryLoader, PyPDFLoader #loads multiple files from a folder and reads PDF files and extracts text
 from langchain_text_splitters import RecursiveCharacterTextSplitter #splits long text into chunks
 from langchain_core.documents import Document #represents a document with content and metadata, used for processing and storing text data in a structured format 
-from langchain_openai import OpenAIEmbeddings #generates vector embeddings for text data using OpenAI's embedding models, used for tasks like semantic search and similarity comparisons
-from langchain_community.vectorstores import Chroma #stores and retrieves vector embeddings, used for efficient similarity search and retrieval of relevant documents based on their vector representations
+from langchain_ollama import OllamaEmbeddings #generates vector embeddings for text data using the Ollama API, allowing for efficient storage and retrieval of relevant documents based on their vector representations
+from langchain_chroma import Chroma #stores and retrieves vector embeddings, used for efficient similarity search and retrieval of relevant documents based on their vector representations
 from dotenv import load_dotenv #loads environment variables from a .env file, allowing you to keep sensitive information like API keys out of your codebase and easily manage them in a separate file.
 import os
 import shutil
@@ -55,10 +55,16 @@ def save_to_chroma(chunks: list[Document]): #saves the generated chunks to a Chr
     if os.path.exists(CHROMA_PATH):
         shutil.rmtree(CHROMA_PATH)
 
+    # Use LOCAL embeddings (no OpenAI)
+    embedding_function = OllamaEmbeddings(model="nomic-embed-text")
+
     # Create a new DB from the documents.
     db = Chroma.from_documents(
-        chunks, OpenAIEmbeddings(), persist_directory=CHROMA_PATH
+        documents=chunks,
+        embedding=embedding_function,
+        persist_directory=CHROMA_PATH
     )
+    
     db.persist()
     print(f"Saved {len(chunks)} chunks to {CHROMA_PATH}.")
 
