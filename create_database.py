@@ -50,7 +50,7 @@ def split_text(documents: list[Document]): #uses the RecursiveCharacterTextSplit
     return chunks
 
 
-def save_to_chroma(chunks: list[Document]): #saves the generated chunks to a Chroma vector store, which allows for efficient storage and retrieval of vector embeddings for semantic search and retrieval tasks. The function first checks if a Chroma database already exists at the specified path and removes it if it does, ensuring that a fresh database is created with the new chunks. Then, it creates a new Chroma vector store from the provided chunks using OpenAIEmbeddings to generate vector representations of the text content, and persists the database to disk for future use.
+def save_to_chroma(chunks): 
     # Clear out the database first.
     if os.path.exists(CHROMA_PATH):
         shutil.rmtree(CHROMA_PATH)
@@ -65,7 +65,6 @@ def save_to_chroma(chunks: list[Document]): #saves the generated chunks to a Chr
         persist_directory=CHROMA_PATH
     )
     
-    db.persist()
     print(f"Saved {len(chunks)} chunks to {CHROMA_PATH}.")
 
 

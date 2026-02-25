@@ -1,13 +1,11 @@
-import argparse
-# from dataclasses import dataclass
-from click import prompt
-from langchain_chroma import Chroma
-from langchain_ollama import OllamaEmbeddings, ChatOllama
-from langchain_core.prompts import ChatPromptTemplate
-from dotenv import load_dotenv
-load_dotenv()
+import argparse # For parsing command-line arguments
+from langchain_chroma import Chroma #stores and retrieves vector embeddings, used for efficient similarity search and retrieval of relevant documents based on their vector representations
+from langchain_ollama import OllamaEmbeddings, ChatOllama #OllamaEmbeddings generates vector embeddings for text data using the Ollama API, allowing for efficient storage and retrieval of relevant documents based on their vector representations. ChatOllama is a language model that can be used to generate responses based on the provided context and question, allowing for natural language understanding and generation capabilities in the application.
+from langchain_core.prompts import ChatPromptTemplate #used to create structured prompts for language models, allowing for dynamic generation of prompts based on templates and input variables, which can be used to guide the model's responses in a more controlled and context-aware manner.
+from dotenv import load_dotenv #loads environment variables from a .env file, allowing to keep sensitive information like API keys out of your codebase and easily manage them in a separate file. This is important for security and flexibility when working with APIs and other services that require authentication.
+load_dotenv() #loads API keys from .env, ensuring that the necessary credentials are available for the application to interact with external services like the Ollama API for generating embeddings and responses based on the provided context and questions.
 
-CHROMA_PATH = "chroma"
+CHROMA_PATH = "chroma" #directory where the Chroma vector store is saved, allowing for persistent storage of vector embeddings and efficient retrieval of relevant documents based on their vector representations. This path is used to load the existing vector store when querying for relevant documents based on user input, enabling the application to perform similarity searches and generate responses based on the stored context.
 PROMPT_TEMPLATE = """
 Answer the question based only on the following context:
 
@@ -20,33 +18,32 @@ Answer the question based on the above context: {question}
 
 
 def main():
-    # Create CLI.
-    parser = argparse.ArgumentParser()
-    parser.add_argument("query_text", type=str, help="The query text.")
-    args = parser.parse_args()
-    query_text = args.query_text
+    parser = argparse.ArgumentParser() #creates a command-line interface (CLI) for the application, allowing users to provide input directly from the terminal when running the script. This is useful for making the application more flexible and user-friendly, as it can accept different queries without needing to modify the code. The parser is configured to accept a single argument, "query_text", which is expected to be a string containing the user's query that will be used to search the Chroma vector store and generate a response based on the relevant context retrieved from the database.
+    parser.add_argument("query_text", type=str, help="The query text.") #adds an argument to the parser that specifies the expected input from the user. In this case, "query_text" is defined as a required positional argument of type string, and the help parameter provides a brief description of what the argument represents, which will be displayed when the user runs the script with the --help flag. This setup allows users to easily understand how to provide their query when executing the script from the command line.
+    args = parser.parse_args() #parses the command-line arguments provided by the user when running the script, allowing the application to access the input values and use them in the subsequent processing steps. In this case, it will extract the value of "query_text" from the command-line input and store it in the "args" variable for later use when querying the Chroma vector store and generating a response based on the retrieved context.
+    query_text = args.query_text #stores the value of the "query_text" argument in a variable for easier access and readability in the subsequent code, allowing the application to use this variable when performing similarity searches in the Chroma vector store and generating responses based on the user's query.
 
     # Prepare the DB.
-    embedding_function = OllamaEmbeddings(model="nomic-embed-text")
-    db = Chroma(persist_directory=CHROMA_PATH, embedding_function=embedding_function)
+    embedding_function = OllamaEmbeddings(model="nomic-embed-text") #creates an instance of the OllamaEmbeddings class, which is used to generate vector embeddings for text data using the Ollama API. The specified model "nomic-embed-text" indicates which embedding model to use for generating the vector representations of the text data, allowing for efficient storage and retrieval of relevant documents based on their vector representations when querying the Chroma vector store.
+    db = Chroma(persist_directory=CHROMA_PATH, embedding_function=embedding_function) #initializes a Chroma vector store by loading the existing database from the specified directory (CHROMA_PATH) and using the provided embedding function (OllamaEmbeddings) to generate vector representations of the text data. This allows the application to perform similarity searches and retrieve relevant documents based on their vector representations when processing user queries, enabling efficient retrieval of context for generating responses.
 
     # Search the DB.
-    results = db.similarity_search_with_relevance_scores(query_text, k=3)
-    if len(results) == 0 or results[0][1] < 0.7:
+    results = db.similarity_search_with_relevance_scores(query_text, k=3) #performs a similarity search in the Chroma vector store using the provided query text, retrieving the top 3 most relevant documents based on their vector representations. The function returns a list of tuples, where each tuple contains a Document object and its corresponding relevance score, allowing the application to identify which documents are most relevant to the user's query and use that context for generating a response.
+    if len(results) == 0 or results[0][1] < 0.7: #checks if the search results are empty or if the relevance score of the top result is below a certain threshold (0.7 in this case). If either condition is true, it indicates that there are no sufficiently relevant documents in the database to answer the user's query, and the application will print a message indicating that no matching results were found and return without generating a response. This helps ensure that the application only provides answers when there is enough relevant context available, improving the quality and accuracy of the responses generated based on the user's query.
         print(f"Unable to find matching results.")
         return
 
-    context_text = "\n\n---\n\n".join([doc.page_content for doc, _score in results])
-    prompt_template = ChatPromptTemplate.from_template(PROMPT_TEMPLATE)
-    prompt = prompt_template.format(context=context_text, question=query_text)
+    context_text = "\n\n---\n\n".join([doc.page_content for doc, _score in results]) #combines the content of the retrieved documents into a single string, separating each document's content with a delimiter ("---") for clarity. This combined context will be used as input for the language model to generate a response based on the relevant information retrieved from the Chroma vector store, allowing the application to provide answers that are informed by the most relevant documents related to the user's query.
+    prompt_template = ChatPromptTemplate.from_template(PROMPT_TEMPLATE) #creates a ChatPromptTemplate instance from the defined PROMPT_TEMPLATE string, which serves as a structured template for generating prompts to be used with the language model. This template includes placeholders for the context and question, allowing the application to dynamically insert the relevant information when generating prompts for the model, guiding it to produce responses that are based on the provided context and user query in a more controlled and effective manner.
+    prompt = prompt_template.format(context=context_text, question=query_text) #formats the prompt by filling in the placeholders in the ChatPromptTemplate with the combined context text and the user's query. This results in a complete prompt that can be sent to the language model (ChatOllama) to generate a response based on the relevant information retrieved from the Chroma vector store, allowing the application to provide answers that are informed by the most relevant documents related to the user's query. The formatted prompt will guide the model to focus on the provided context when generating its response, improving the relevance and accuracy of the answers produced.
     print(prompt)
 
-    model = ChatOllama(model="llama3.2:3b", temperature=0)
-    response = model.invoke(prompt)
-    response_text = response.content
+    model = ChatOllama(model="llama3.2:3b", temperature=0) #creates an instance of the ChatOllama language model, specifying the model to use ("llama3.2:3b") and setting the temperature to 0 for deterministic responses. This model will be used to generate answers based on the provided context and user query, allowing the application to produce responses that are informed by the relevant documents retrieved from the Chroma vector store. The temperature setting of 0 ensures that the model's output is consistent and focused on providing accurate answers based on the input context, rather than generating more creative or varied responses.
+    response = model.invoke(prompt) #sends the formatted prompt to the ChatOllama language model and retrieves the generated response. The invoke method processes the prompt and produces an output based on the provided context and user query, allowing the application to generate answers that are informed by the relevant documents retrieved from the Chroma vector store. The response will contain the model's answer to the user's query, which can then be printed or further processed as needed.
+    response_text = response.content #extracts the content of the response generated by the ChatOllama model, which contains the answer to the user's query based on the provided context. This text can then be printed or further processed as needed, allowing the application to present the generated response to the user in a clear and informative manner. The response text will be based on the relevant documents retrieved from the Chroma vector store, ensuring that the answers provided are informed by the most relevant information available in the database.
 
-    sources = [doc.metadata.get("source", None) for doc, _score in results]
-    formatted_response = f"Response: {response_text}\nSources: {sources}"
+    sources = [doc.metadata.get("source", None) for doc, _score in results] #extracts the source information from the metadata of each retrieved document, creating a list of sources that correspond to the documents used to generate the response. This allows the application to provide transparency about where the information in the response is coming from, giving users insight into the origins of the data that informed the model's answer. The sources can be printed alongside the response to provide context and credibility to the generated answers, helping users understand which documents contributed to the response and allowing them to reference those sources if needed for further information or verification.
+    formatted_response = f"Response: {response_text}\nSources: {sources}" #formats the final output by combining the generated response text with the list of sources, creating a clear and informative message that includes both the answer to the user's query and the relevant sources that contributed to that answer. This formatted response can be printed or further processed as needed, allowing the application to present the generated response to the user in a way that highlights both the content of the answer and the credibility of the information based on its sources. By including the sources, users can have confidence in the accuracy of the response and can refer back to those sources for additional context or verification if desired.
     print(formatted_response)
 
 
