@@ -32,8 +32,8 @@ def load_documents():
 
 def split_text(documents: list[Document]): #uses the RecursiveCharacterTextSplitter to split the text content of each Document into smaller chunks.
     text_splitter = RecursiveCharacterTextSplitter(
-        chunk_size=1000,
-        chunk_overlap=150,
+        chunk_size=800,
+        chunk_overlap=200,
         length_function=len,
         add_start_index=True,
     ) #configures the text splitter to create chunks of up to 1000 characters with an overlap of 150 characters between consecutive chunks, using the built-in len function to determine the length of the text and adding a start index to each chunk for reference.
@@ -55,7 +55,7 @@ def save_to_chroma(chunks):
     if os.path.exists(CHROMA_PATH):
         shutil.rmtree(CHROMA_PATH)
 
-    # Use LOCAL embeddings (no OpenAI)
+    # Use LOCAL embeddings
     embedding_function = OllamaEmbeddings(model="nomic-embed-text")
 
     # Create a new DB from the documents.
