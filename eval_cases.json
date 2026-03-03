@@ -1,0 +1,84 @@
+[
+  {
+    "id": "definition_infra_vuln_index",
+    "question_variants": [
+      "What indicators compose the Physical Infrastructure Vulnerability Index?",
+      "What variables make up the Physical Infrastructure Vulnerability Index?",
+      "Which indicators are used to construct the Physical Infrastructure Vulnerability Index?",
+      "The Physical Infrastructure Vulnerability Index is based on which variables?",
+      "What is the Physical Infrastructure Vulnerability Index composed of?",
+      "List the indicators included in the Physical Infrastructure Vulnerability Index.",
+      "What are the four variables in the Physical Infrastructure Vulnerability Index?",
+      "physical infrastructure vulnerability index: what variables does it include?"
+    ],
+    "expected_contains": [
+      "number of fire incidents",
+      "number of flood incidents",
+      "slum levels",
+      "population density"
+    ],
+    "expected_exact": null
+  },
+  {
+    "id": "causal_covid_clusters_and_high_risk",
+    "question_variants": [
+      "Why did COVID-19 cases cluster differently across Jakarta wards, and which areas were identified as high-risk?",
+      "What explains the uneven spatial distribution of COVID-19 case clusters across Jakarta wards, and where were the high-risk wards located?",
+      "How did socioeconomic conditions shape the spatial pattern of COVID-19 cases in Jakarta, and which regions needed extra government attention?",
+      "What factors contributed to ward-level COVID-19 clustering in Jakarta, and which parts of the city were flagged as high-risk by GWR?",
+      "Why were Jakarta’s COVID-19 clusters concentrated in certain wards, and where were the wards classified as high-risk?",
+      "What drove the spatial distribution of COVID-19 cases across Jakarta wards, and which areas were identified as high-risk in the analysis?"
+    ],
+    "expected_contains": [
+      "socioeconomic",
+      "inequal",
+      "north jakarta",
+      "west jakarta"
+    ],
+    "expected_exact": null
+  },
+  {
+    "id": "descriptive_great_location",
+    "question_variants": [
+      "How did the author constitute a 'great location' from the customer’s perspective?",
+      "How does the author define what customers consider a 'great location'?",
+      "How did the author identify the characteristics of a 'great location' in customer reviews?",
+      "What approach did the author use to determine what makes a restaurant location 'great' to customers?",
+      "According to the author, what elements contribute to a 'great location' from reviewers’ point of view?",
+      "How did the study operationalize the idea of 'great location' using review text?",
+      "What themes did the author use to describe 'great location' from the customer perspective?",
+      "In the reviews, what factors were associated with mentions of a 'great location'?"
+    ],
+    "expected_contains": [
+      "keywords",
+      "three",
+      "themes",
+      "natural",
+      "urban",
+      "ambiance"
+    ],
+    "expected_exact": null
+  },
+  {
+    "id": "comparison_ppm_ssnet_original_vs_modified",
+    "question_variants": [
+      "What is the difference between the original PPM-SSNet and the modified version of the PPM-SSNet model?",
+      "How does the modified PPM-SSNet differ from the original PPM-SSNet implementation?",
+      "What changes were made when adapting PPM-SSNet compared to the original model?",
+      "Compare the original PPM-SSNet architecture and evaluation setup with the modified version used in the study.",
+      "In what ways is the study’s PPM-SSNet variant different from Bai et al. (2020)?",
+      "What are the key differences between the baseline PPM-SSNet and the simplified version implemented here?",
+      "How do the inputs and architecture in the modified PPM-SSNet differ from the original approach?"
+    ],
+    "expected_contains": [
+      "semi",
+      "siamese",
+      "pre",
+      "post",
+      "only post",
+      "64",
+      "1024"
+    ],
+    "expected_exact": null
+  }
+]
