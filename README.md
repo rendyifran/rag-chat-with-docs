@@ -1,5 +1,11 @@
 # RAG Chatbot for Personal Knowledge Base
 
+<p align="center">
+  <img src="images/RAG_Interface.jpg" width="30%" />
+  <img src="images/RAG_Workflow.png" width="30%" />
+  <img src="images/RAG_Performance.jpg" width="30%" />
+</p>
+
 ## Overview
 
 This project develops a custom Retrieval-Augmented Generation (RAG) assistant to support efficient querying and understanding of personal MSc and applied data science projects.
