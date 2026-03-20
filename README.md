@@ -138,6 +138,7 @@ Python · Streamlit · ChromaDB · Ollama · LangChain · Vector Embeddings · N
 
 ## Repository Structure
 
+    images/                – Visual outputs 
     Data/                  – Source documents  
     app.py                 – Streamlit chatbot interface  
     query_data.py          – RAG pipeline and query handling  
